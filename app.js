@@ -1,8 +1,6 @@
 var dns = require('dns')
   , _ = require('underscore')
 
-var new_address = '107.170.8.210';
-
 var push = require( 'pushover-notifications' )
   , PUSHOVER_TOKEN = 'amFjBncD1tbvRc5YRDSZ3J8HJxv5hx'
   , PUSHOVER_USER = 'shlV6I4eGqpQ7PKUmBPuK4wvS3aVq2';
@@ -32,11 +30,11 @@ function notify() {
   });
 }
 
-if (!module.parent) {
-  var domain = 'canuckistani.ca';
+function resolve(domain, new_address) {
+  
 
   dns.resolve4(domain, function(err, addresses) {
-    if (err) throw err;
+    if (err) console.log(err);
     _.each(addresses, function(a) {
       console.log("%s resolves to %s", domain, a);
       if (a === new_address) {
@@ -46,7 +44,21 @@ if (!module.parent) {
       }
     });
   });
-
-  // notify();
 }
 
+if (!module.parent) {
+
+  var attempts = 1;
+
+  var domain = 'beers.paas.canuckistani.ca';
+  var new_address = '192.241.227.72';
+
+  console.log("attempts: "+attempts);
+  resolve(domain, new_address);
+
+  setInterval(function() {
+    attempts++;
+    console.log("attempts: "+attempts);
+    resolve(domain, new_address);
+  }, 30000);
+}
